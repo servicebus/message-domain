@@ -1,36 +1,29 @@
-var domain = require('domain');
+var domain = require('domain')
 
 module.exports = function messageDomain (opts) {
-
-  opts = opts || {};
+  opts = opts || {}
 
   return {
-
     handleIncoming: function json (channel, message, options, next) {
-      
-      var d = domain.create();
-      
+      var d = domain.create()
+
       if (opts.onError) {
         d.on('error', function (err) {
           if (opts.onError) {
-            opts.onError(err, message, channel, d);
+            opts.onError(err, message, channel, d)
           } else {
-            throw err;
+            throw err
           }
-        });
+        })
       }
 
-      d.run(function() {
-
+      d.run(function () {
         if (message.properties.correlationId) {
-          d.correlationId = message.properties.correlationId;
+          d.correlationId = message.properties.correlationId
         }
 
-        next.bind(this, null, channel, message, options)();
-        
-      });
-
-    },
-
-  };
-};
+        next.bind(this, null, channel, message, options)()
+      })
+    }
+  }
+}
